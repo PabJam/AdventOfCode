@@ -5,7 +5,7 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Day02.Part_2(Day02.input_2).ToString());
+            Console.WriteLine(Day03.Part_2(Day03.input_2).ToString());
         }
     }
 }
