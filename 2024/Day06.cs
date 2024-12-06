@@ -87,70 +87,98 @@ namespace _2024
                 {
                     if (grid[x][y] == '.')
                     {
+                        pos = startPos;
+                        direction = (0, 1);
                         grid[x][y] = '#';
                         HashSet<((int, int), (int, int))> visited = new HashSet<((int, int), (int, int))>();
+                        obstacle = (x, y);
+                        //if (obstacle == (3,3))
+                        //{
+                        //    Console.WriteLine("should loop");
+                        //}
+                        while (true)
+                        {
+                            if(!visited.Add((pos, direction)))
+                            {
+                                obstacles.Add(obstacle);
+                                break;
+                            }
+                            pos = (pos.Item1 + direction.Item1, pos.Item2 + direction.Item2);
+                            if (pos.Item1 < 0 || pos.Item1 >= grid.Length) { break; }
+                            if (pos.Item2 < 0 || pos.Item2 >= grid[0].Length) { break; }
+                            if (grid[pos.Item1][pos.Item2] == '.')
+                            {
+                                continue;
+                            }
+                            if (grid[pos.Item1][pos.Item2] == '#')
+                            {
+                                pos = (pos.Item1 - direction.Item1, pos.Item2 - direction.Item2);
+                                direction = (direction.Item2, direction.Item1 * -1);
+                                continue;
+                            }
+                        }
+                        grid[x][y] = '.';
                     }
-                    else { continue; }
                 }
             }
 
            
             //int counter = 0;
-            while (true)
-            {
-                //counter++;
-                //Console.Write("\r" + ((double)counter / 5131.0) * 100 + "%          ");
-                visited.Add((pos, direction));
-                
-                pos = (pos.Item1 + direction.Item1, pos.Item2 + direction.Item2);
-                if (pos.Item1 < 0 || pos.Item1 >= grid.Length) { break; }
-                if (pos.Item2 < 0 || pos.Item2 >= grid[0].Length) { break; }
-
-                if (grid[pos.Item1][pos.Item2] == '.')
-                {
-                    (int, int) obstacle = pos;
-                    (int, int) _pos = (pos.Item1 - direction.Item1, pos.Item2 - direction.Item2);
-                    (int, int) _dir = (direction.Item2, direction.Item1 * -1);
-                    grid[obstacle.Item1][obstacle.Item2] = '#';
-                    HashSet<((int, int), (int, int))> _visited = new HashSet<((int, int), (int, int))>(visited);
-                    while (true)
-                    {
-                        if (visited.Contains((_pos, _dir)))
-                        {
-                            obstacles.Add(obstacle);
-                            break;
-                        }
-                        if (_visited.Contains((_pos, _dir)))
-                        {
-                            //obstacles.Add(obstacle);
-                            break;
-                        }
-                        _visited.Add((_pos, _dir));
-                        _pos = (_pos.Item1 + _dir.Item1, _pos.Item2 + _dir.Item2);
-                        if (_pos.Item1 < 0 || _pos.Item1 >= grid.Length) 
-                        { break; }
-                        if (_pos.Item2 < 0 || _pos.Item2 >= grid[0].Length) 
-                        { break; }
-
-                        if (grid[_pos.Item1][_pos.Item2] == '#')
-                        {
-                            _pos = (_pos.Item1 - _dir.Item1, _pos.Item2 - _dir.Item2);
-                            _dir = (_dir.Item2, _dir.Item1 * -1);
-                            continue;
-                        }
-
-                    }
-                    grid[obstacle.Item1][obstacle.Item2] = '.';
-                    continue;
-                }
-                if (grid[pos.Item1][pos.Item2] == '#')
-                {
-                    pos = (pos.Item1 - direction.Item1, pos.Item2 - direction.Item2);
-                    direction = (direction.Item2, direction.Item1 * -1);
-                    continue;
-                }
-            }
-            if (obstacles.Contains(startPos)) { obstacles.Remove(startPos); }
+            //while (true)
+            //{
+            //    //counter++;
+            //    //Console.Write("\r" + ((double)counter / 5131.0) * 100 + "%          ");
+            //    visited.Add((pos, direction));
+            //    
+            //    pos = (pos.Item1 + direction.Item1, pos.Item2 + direction.Item2);
+            //    if (pos.Item1 < 0 || pos.Item1 >= grid.Length) { break; }
+            //    if (pos.Item2 < 0 || pos.Item2 >= grid[0].Length) { break; }
+            //
+            //    if (grid[pos.Item1][pos.Item2] == '.')
+            //    {
+            //        (int, int) obstacle = pos;
+            //        (int, int) _pos = (pos.Item1 - direction.Item1, pos.Item2 - direction.Item2);
+            //        (int, int) _dir = (direction.Item2, direction.Item1 * -1);
+            //        grid[obstacle.Item1][obstacle.Item2] = '#';
+            //        HashSet<((int, int), (int, int))> _visited = new HashSet<((int, int), (int, int))>(visited);
+            //        while (true)
+            //        {
+            //            if (visited.Contains((_pos, _dir)))
+            //            {
+            //                obstacles.Add(obstacle);
+            //                break;
+            //            }
+            //            if (_visited.Contains((_pos, _dir)))
+            //            {
+            //                //obstacles.Add(obstacle);
+            //                break;
+            //            }
+            //            _visited.Add((_pos, _dir));
+            //            _pos = (_pos.Item1 + _dir.Item1, _pos.Item2 + _dir.Item2);
+            //            if (_pos.Item1 < 0 || _pos.Item1 >= grid.Length) 
+            //            { break; }
+            //            if (_pos.Item2 < 0 || _pos.Item2 >= grid[0].Length) 
+            //            { break; }
+            //
+            //            if (grid[_pos.Item1][_pos.Item2] == '#')
+            //            {
+            //                _pos = (_pos.Item1 - _dir.Item1, _pos.Item2 - _dir.Item2);
+            //                _dir = (_dir.Item2, _dir.Item1 * -1);
+            //                continue;
+            //            }
+            //
+            //        }
+            //        grid[obstacle.Item1][obstacle.Item2] = '.';
+            //        continue;
+            //    }
+            //    if (grid[pos.Item1][pos.Item2] == '#')
+            //    {
+            //        pos = (pos.Item1 - direction.Item1, pos.Item2 - direction.Item2);
+            //        direction = (direction.Item2, direction.Item1 * -1);
+            //        continue;
+            //    }
+            //}
+            //if (obstacles.Contains(startPos)) { obstacles.Remove(startPos); }
             return obstacles.Count;
         }
 
