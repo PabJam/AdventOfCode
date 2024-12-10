@@ -8,7 +8,7 @@
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            Console.WriteLine(Day10.Part_1(Day10.test_input_1).ToString());     
+            Console.WriteLine(Day10.Part_2(Day10.input_2).ToString());     
             timer.Stop();
             Console.WriteLine(timer.Elapsed.ToString());
         }
