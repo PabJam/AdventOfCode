@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,14 @@ namespace Utils
             Array.Copy(buffer, i, result, 0, 32 - i);
 
             return new string(result);
+        }
+
+        // Checks if position is in bounds of grid
+        public static bool InBound((int, int) pos, int xLen, int yLen)
+        {
+            if (pos.Item1 < 0 || pos.Item1 > xLen - 1) { return false; }
+            if (pos.Item2 < 0 || pos.Item2 > yLen - 1) { return false; }
+            return true;
         }
     }
 }
