@@ -69,7 +69,7 @@ namespace _2024
             string[] lines = input.Split("\r\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             ((int, int), (int, int))[] robots = new ((int, int), (int, int))[lines.Length];
             char[,] grid = new char[gridSize.Item1, gridSize.Item2];
-            HashSet<string> possiblePrints = new HashSet<string> ();
+            List<string> possiblePrints = new List<string> ();
             for (int i = 0; i < lines.Length; i++)
             {
                 Match match = Regex.Match(lines[i], @"p=(\d+),(\d+) v=(-?\d+),(-?\d+)");
@@ -79,9 +79,10 @@ namespace _2024
                 robots[i].Item2.Item2 = int.Parse(match.Groups[4].Value);
             }
             long seconds = 0;
+            (long, long) entropyAtSeconds = (long.MaxValue, 0);
             while (true)
             {
-                Console.WriteLine("Seconds: " + seconds.ToString());
+                
                 for (int x = 0; x < grid.GetLength(0); x++)
                 {
                     for (int y = 0; y < grid.GetLength(1); y++)
@@ -105,20 +106,37 @@ namespace _2024
                     render += "\r\n";
                     
                 }
-                
-                if (possiblePrints.Add(render) == false)
+
+                long currentEntropy = 0;
+                for (int i = 0; i < robots.Length; i++)
+                {
+                    for (int j = 0; j < robots.Length; j++)
+                    {
+                        currentEntropy += Math.Abs(robots[i].Item1.Item1 - robots[j].Item1.Item1);
+                        currentEntropy += Math.Abs(robots[i].Item1.Item2 - robots[j].Item1.Item2);
+                    }
+                }
+
+                if (currentEntropy < entropyAtSeconds.Item1)
+                {
+                    entropyAtSeconds.Item1 = currentEntropy;
+                    entropyAtSeconds.Item2 = seconds;
+                }
+
+                if (possiblePrints.Contains(render) == true)
                 {
                     break;
                 }
-                Console.WriteLine(render);
-                if (Console.ReadLine() == "y") { break; }
-                Console.SetCursorPosition(0, 0);
-                Console.Clear();
+                else
+                {
+                    possiblePrints.Add(render);
+                }
+                
                 seconds++;
             }
 
-
-            return seconds;
+            Console.WriteLine(possiblePrints[(int)entropyAtSeconds.Item2]);
+            return entropyAtSeconds.Item2;
         }
 
         private static (int,int) MoveRobot((int, int) pos, (int, int) velocity) 
