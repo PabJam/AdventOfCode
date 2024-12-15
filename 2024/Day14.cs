@@ -78,8 +78,6 @@ namespace _2024
                 robots[i].Item2.Item1 = int.Parse(match.Groups[3].Value);
                 robots[i].Item2.Item2 = int.Parse(match.Groups[4].Value);
             }
-            long seconds = 0;
-            (long, long) entropyAtSeconds = (long.MaxValue, 0);
             while (true)
             {
                 
@@ -107,22 +105,6 @@ namespace _2024
                     
                 }
 
-                long currentEntropy = 0;
-                for (int i = 0; i < robots.Length; i++)
-                {
-                    for (int j = 0; j < robots.Length; j++)
-                    {
-                        currentEntropy += Math.Abs(robots[i].Item1.Item1 - robots[j].Item1.Item1);
-                        currentEntropy += Math.Abs(robots[i].Item1.Item2 - robots[j].Item1.Item2);
-                    }
-                }
-
-                if (currentEntropy < entropyAtSeconds.Item1)
-                {
-                    entropyAtSeconds.Item1 = currentEntropy;
-                    entropyAtSeconds.Item2 = seconds;
-                }
-
                 if (possiblePrints.Contains(render) == true)
                 {
                     break;
@@ -131,12 +113,16 @@ namespace _2024
                 {
                     possiblePrints.Add(render);
                 }
-                
-                seconds++;
             }
 
-            Console.WriteLine(possiblePrints[(int)entropyAtSeconds.Item2]);
-            return entropyAtSeconds.Item2;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < possiblePrints.Count; i++)
+            {
+                stringBuilder.Append(i.ToString() + "\r\n");
+                stringBuilder.Append(possiblePrints[i]);
+            }
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Day14Part2.txt", stringBuilder.ToString());
+            return 0;
         }
 
         private static (int,int) MoveRobot((int, int) pos, (int, int) velocity) 
