@@ -31,14 +31,14 @@ namespace _2024
             public (int, int) direction;
             public int gCost;
             public int hCost;
-            public Node? parent;
-            public Node((int, int) pos, (int, int) direction, int gCost, int hCost, Node? parent)
+            public HashSet<Node> parents;
+            public Node((int, int) pos, (int, int) direction, int gCost, int hCost, HashSet<Node> parents)
             {
                 this.pos = pos;
                 this.direction = direction;
                 this.gCost = gCost;
                 this.hCost = hCost;
-                this.parent = parent;
+                this.parents = parents;
             }
 
             public bool Equals(Node? other)
@@ -70,7 +70,7 @@ namespace _2024
                 }
             }
 
-            Node current = new Node(startPos, direction, 0, HCost(startPos, endPos), null);
+            Node current = new Node(startPos, direction, 0, HCost(startPos, endPos), new HashSet<Node>());
             while (true)
             {
                 closed.Add(current);
@@ -95,7 +95,7 @@ namespace _2024
                         {
                             cost += 1000;
                         }
-                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), current);
+                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), new HashSet<Node> { current });
                         if (closed.Contains(neighbour) == false)
                         {
                             open.Add(neighbour);
@@ -125,8 +125,11 @@ namespace _2024
             grid[trace.pos.Item1][trace.pos.Item2] = 'E';
             while (true)
             {
-                if (trace.parent == null) {  break; }
-                trace = trace.parent;
+                if (trace.parents.Count == 0) { break; }
+                foreach (Node parent in trace.parents)
+                {
+                    trace = parent;
+                }
 
                 switch (trace.direction)
                 {
@@ -182,9 +185,7 @@ namespace _2024
                 }
             }
 
-
-
-            Node current = new Node(startPos, direction, 0, HCost(startPos, endPos), null);
+            Node current = new Node(startPos, direction, 0, HCost(startPos, endPos), new HashSet<Node>());
             while (true)
             {
                 closed.Add(current);
@@ -209,7 +210,7 @@ namespace _2024
                         {
                             cost += 1000;
                         }
-                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), current);
+                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), new HashSet<Node> { current });
                         if (closed.Contains(neighbour) == false)
                         {
                             open.Add(neighbour);
@@ -231,14 +232,23 @@ namespace _2024
             while (true)
             {
                 path.Add(trace);
-                if (trace.parent == null) { break; }
-                trace = trace.parent;
+                if (trace.parents.Count == 0) { break; }
+                foreach (Node parent in trace.parents)
+                {
+                    trace = parent;
+                }
             }
 
-            current = new Node(startPos, (1,0), 0, HCost(startPos, endPos), null);
+            current = new Node(startPos, (1, 0), 0, HCost(startPos, endPos), new HashSet<Node>());
             open.Clear();
+            closed.Clear();
             while (true)
             {
+                if (current.pos != endPos)
+                {
+                    closed.Add(current);
+                }
+
                 for (int i = 0; i < 4; i++)
                 {
                     (int, int) nextPos = (current.pos.Item1 + direction.Item1, current.pos.Item2 + direction.Item2);
@@ -258,11 +268,18 @@ namespace _2024
                         {
                             cost += 1000;
                         }
-                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), current);
-                        if (neighbour.gCost + neighbour.hCost <= lowestPath)
+                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), new HashSet<Node> { current });
+                        if (closed.Contains(neighbour) == false)
                         {
-                            //TODO Loops verhindern test input ecke oben links
                             open.Add(neighbour);
+                        }
+                        else
+                        {
+                            Node explored = closed[closed.IndexOf(neighbour)];
+                            if (explored.gCost + explored.hCost == neighbour.gCost + neighbour.hCost)
+                            {
+                                explored.parents.Add(current);
+                            }
                         }
                     }
                     direction = (-direction.Item2, direction.Item1);
@@ -270,11 +287,9 @@ namespace _2024
 
                 if (current.pos == endPos)
                 {
-                    while (true)
+                    if (current.hCost + current.gCost <= lowestPath)
                     {
-                        path.Add(current);
-                        if (current.parent == null) { break; }
-                        current = current.parent;
+                        GetParents(current, ref path);
                     }
                 }
 
@@ -282,8 +297,10 @@ namespace _2024
 
                 current = GetOpen(ref open);
                 direction = current.direction;
+
+                if (current.hCost + current.gCost > lowestPath) { break; }
             }
-            
+
             // Rendering
             StringBuilder render = new StringBuilder();
             foreach (Node pos in path)
@@ -300,7 +317,7 @@ namespace _2024
                 render.Append("\r\n");
             }
             Console.WriteLine(render.ToString());
-            HashSet<(int,int)> uniquePos = new HashSet<(int, int)>();
+            HashSet<(int, int)> uniquePos = new HashSet<(int, int)>();
             foreach (Node pos in path)
             {
                 uniquePos.Add(pos.pos);
@@ -327,6 +344,17 @@ namespace _2024
             }
             open.RemoveAt(idx);
             return current;
+        }
+
+        private static void GetParents(Node node, ref HashSet<Node> paths)
+        {
+            paths.Add(node);
+            if (node.parents.Count == 0) { return; }
+            foreach (Node parent in node.parents) 
+            {
+                paths.Add(parent);
+                GetParents(parent, ref paths);
+            }
         }
 
     }
