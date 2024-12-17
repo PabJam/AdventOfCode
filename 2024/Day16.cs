@@ -182,25 +182,13 @@ namespace _2024
                 }
             }
 
-            HashSet<Node> path = new HashSet<Node>();
+
+
             Node current = new Node(startPos, direction, 0, HCost(startPos, endPos), null);
-            long lowestPath = long.MaxValue;
             while (true)
             {
-                if (current.pos == endPos) 
-                {
-                    if (current.gCost + current.hCost <= lowestPath)
-                    while (true)
-                    {
-                        path.Add(current);
-                        if (current.parent == null) { break; }
-                        current = current.parent;
-                    }
-                }
-                else
-                {
-                    closed.Add(current);
-                }
+                closed.Add(current);
+                if (current.pos == endPos) { break; }
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -226,35 +214,81 @@ namespace _2024
                         {
                             open.Add(neighbour);
                         }
-                        else if (path.Contains(neighbour))
-                        {
-                            //TODO wenn path neighbour beinhaltet ...
-                            
-                        }   
                     }
                     direction = (-direction.Item2, direction.Item1);
                 }
 
 
-                current = open[0];
-                int idx = 0;
-                for (int i = 1; i < open.Count; i++)
+                current = GetOpen(ref open);
+                direction = current.direction;
+            }
+
+
+            HashSet<Node> path = new HashSet<Node>();
+            long lowestPath = current.hCost + current.gCost;
+
+            Node trace = current;
+            while (true)
+            {
+                path.Add(trace);
+                if (trace.parent == null) { break; }
+                trace = trace.parent;
+            }
+
+            current = new Node(startPos, (1,0), 0, HCost(startPos, endPos), null);
+            open.Clear();
+            while (true)
+            {
+                for (int i = 0; i < 4; i++)
                 {
-                    if (open[i].gCost + open[i].hCost < current.gCost + current.hCost)
+                    (int, int) nextPos = (current.pos.Item1 + direction.Item1, current.pos.Item2 + direction.Item2);
+
+                    if (grid[nextPos.Item1][nextPos.Item2] != '#')
                     {
-                        current = open[i];
-                        idx = i;
+                        int cost = current.gCost + 1;
+                        if ((direction.Item1, direction.Item2) == (-current.direction.Item1, -current.direction.Item2))
+                        {
+                            cost += 2000;
+                        }
+                        else if (direction == current.direction)
+                        {
+                            cost += 0;
+                        }
+                        else
+                        {
+                            cost += 1000;
+                        }
+                        Node neighbour = new Node(nextPos, direction, cost, HCost(nextPos, endPos), current);
+                        if (neighbour.gCost + neighbour.hCost <= lowestPath)
+                        {
+                            //TODO Loops verhindern test input ecke oben links
+                            open.Add(neighbour);
+                        }
+                    }
+                    direction = (-direction.Item2, direction.Item1);
+                }
+
+                if (current.pos == endPos)
+                {
+                    while (true)
+                    {
+                        path.Add(current);
+                        if (current.parent == null) { break; }
+                        current = current.parent;
                     }
                 }
-                open.RemoveAt(idx);
+
+                if (open.Count == 0) { break; }
+
+                current = GetOpen(ref open);
                 direction = current.direction;
             }
             
             // Rendering
             StringBuilder render = new StringBuilder();
-            foreach ((int, int) pos in path)
+            foreach (Node pos in path)
             {
-                grid[pos.Item1][pos.Item2] = 'O';
+                grid[pos.pos.Item1][pos.pos.Item2] = 'O';
             }
 
             for (int y = grid[0].Length - 1; y > -1; y--)
@@ -266,16 +300,34 @@ namespace _2024
                 render.Append("\r\n");
             }
             Console.WriteLine(render.ToString());
-
-            return path.Count;
+            HashSet<(int,int)> uniquePos = new HashSet<(int, int)>();
+            foreach (Node pos in path)
+            {
+                uniquePos.Add(pos.pos);
+            }
+            return uniquePos.Count;
         }
-
-    
 
         private static int HCost((int, int) pos, (int, int) end)
         {
             return Math.Abs(end.Item1 - pos.Item1) + Math.Abs(end.Item2 - pos.Item2);
-        } 
+        }
+        
+        private static Node GetOpen(ref List<Node> open)
+        {
+            int idx = 0;
+            Node current = open[0];
+            for (int i = 1; i < open.Count; i++)
+            {
+                if (open[i].gCost + open[i].hCost < current.gCost + current.hCost)
+                {
+                    current = open[i];
+                    idx = i;
+                }
+            }
+            open.RemoveAt(idx);
+            return current;
+        }
 
     }
 }
