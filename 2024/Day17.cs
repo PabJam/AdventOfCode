@@ -25,15 +25,7 @@ namespace _2024
         public const string input_2 = input_1;
         private delegate void Instruction(ref long regA, ref long regB, ref long regC, int operenad, ref int pc, ref string output);
 
-        // do
-        // 2,4 : RegB = RegA % 8
-        // 1,1 : RegB = RegB xor 1
-        // 7,5 : RegC = RegA / (2 ^ RegB)
-        // 4,6 : RegB = RegB xor RegC
-        // 1,4 : RegB = RegB xor 4
-        // 0,3 : RegA = RegA / (2^3)
-        // 5,5 : print (RegB % 8)
-        // 3,0 : while(RegA /= 0)
+        
 
         public static long Part_1(string input)
         {
@@ -78,10 +70,53 @@ namespace _2024
             {
                 program.Add(int.Parse(programStrArr[i]));
             }
-
-            int maxOutLength = 0;
-            while (true)
+            long[] inputDigits = new long[program.Count];
+            int lastCorrect = 0;
+            for (int i = inputDigits.Length - 1; i > -1; i--)
             {
+                for (int j = 0; j < 8; j++)
+                {
+                    inputDigits[i] = j;
+                    initRegA = 0;
+                    for (int k = 0; k < inputDigits.Length; k++)
+                    {
+                        initRegA |= (inputDigits[k] << (k * 3));
+                    }
+                    long regA = initRegA;
+                    long regB = initRegB;
+                    long regC = initRegC;
+                    output = "";
+                    pc = 0;
+
+                    while (pc < program.Count - 1)
+                    {
+                        Instruction instruction = GetInstruction(program[pc]);
+                        instruction(ref regA, ref regB, ref regC, program[pc + 1], ref pc, ref output);
+                        pc += 2;
+                    }
+
+                    string[] outputLines = output.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                    if (outputLines.Length < programStrArr.Length) { continue; }
+                    if (outputLines[i] == programStrArr[i]) 
+                    {
+                        break; 
+                    }
+                    if (j == 7 && lastCorrect == 0) 
+                    { lastCorrect = i + 1; }
+                }
+            }
+
+            for (int i = 0; i < lastCorrect; i++)
+            {
+                inputDigits[i] = 0;
+            }
+            initRegA = 0;
+            for (int k = 0; k < inputDigits.Length; k++)
+            {
+                initRegA |= (inputDigits[k] << (k * 3));
+            }
+            while (true)
+            { 
                 long regA = initRegA;
                 long regB = initRegB;
                 long regC = initRegC;
@@ -95,16 +130,10 @@ namespace _2024
                     pc += 2;
                 }
 
-                string[] outputLines = output.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-                if (maxOutLength < outputLines.Length)
-                {
-                    Console.WriteLine(maxOutLength.ToString() + " | " + initRegA.ToString());
-                }
                 if (output.Substring(1) == programStr) { break; }
                 initRegA++;
             }
-            
+
             return initRegA;
         }
 

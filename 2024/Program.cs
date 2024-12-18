@@ -8,7 +8,8 @@
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            Console.WriteLine(Day17.Part_2(Day17.input_2).ToString());   
+            // not 68,36
+            Console.WriteLine(Day18.Part_2(Day18.input_2).ToString());   
             timer.Stop();
             Console.WriteLine(timer.Elapsed.ToString());
         }
