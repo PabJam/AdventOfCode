@@ -1,22 +1,15 @@
-﻿namespace _2024
+﻿namespace _2015
 {
     using System.Diagnostics;
-    using Utils;
-
-
     internal class Program
     {
-
-
         static void Main(string[] args)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            Console.WriteLine(Day20.Part_2(Day20.input_2).ToString());   
+            Console.WriteLine(Day02.Part_2(Day02.input_2).ToString());
             timer.Stop();
             Console.WriteLine(timer.Elapsed.ToString());
         }
     }
-
-    
 }
