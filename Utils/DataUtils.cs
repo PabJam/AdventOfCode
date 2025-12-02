@@ -7,6 +7,22 @@ using System.Threading.Tasks;
 
 namespace Utils
 {
+    public struct StringPair
+    {
+        public string[] strPair { get; }
+        public StringPair(string first, string second)
+        {
+            strPair = [first, second];
+        }
+    }
+
+    public enum Relation
+    {
+        SmallerThan = 0,
+        BiggerThan = 1,
+        Equal = 2,
+    }
+
     public static class DataUtils
     {
         /// <summary>

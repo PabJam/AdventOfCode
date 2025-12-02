@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Utils;
 
 namespace _2015
 {
-    class Day04
+    public class Day04 : IDay
     {
-        public const string test_input_1 = "abcdef";
-        public const string input_1 = "iwrupvqb";
-        public const string test_input_2 = test_input_1;
-        public const string input_2 = input_1;
 
         public static long Part_1(string input)
         {

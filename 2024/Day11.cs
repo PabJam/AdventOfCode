@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _2025;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace _2024
 {
-    public static class Day11
+    public class Day11 : IDay
     {
-        public const string test_input_1 = "125 17";
-        public const string input_1 = "773 79858 0 71 213357 2937 1 3998391";
-        public const string test_input_2 = test_input_1;
-        public const string input_2 = input_1;
 
         public static long Part_1(string input)
         {

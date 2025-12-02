@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace _2024
 {
-    public class Day03 : Day
+    public class Day03 : IDay
     {
-        public override long Part_1(string input)
+        public static long Part_1(string input)
         {
             MatchCollection matches = Regex.Matches(input, @"mul\(\d+,\d+\)");
             long sum = 0;
@@ -23,7 +23,7 @@ namespace _2024
             return sum;
         }
 
-        public override long Part_2(string input)
+        public static long Part_2(string input)
         {
             MatchCollection matches = Regex.Matches(input, @"(mul\(\d+,\d+\)|do\(\)|don't\(\))");
             long sum = 0;

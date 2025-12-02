@@ -8,7 +8,7 @@ using Utils;
 
 namespace _2024
 {
-    public class Day05 : Day
+    public class Day05 : IDay
     {
         private static bool CheckLegal((long, long)[] rules, long[] print)
         {
@@ -68,7 +68,7 @@ namespace _2024
             return fixedPrint;
         }
 
-        public override long Part_1(string input)
+        public static long Part_1(string input)
         {
             string[] linesStr = input.Split("\r\n", StringSplitOptions.TrimEntries);
             List<string> rulesStr = new List<string>();
@@ -112,7 +112,7 @@ namespace _2024
             return sum;
         }
 
-        public override long Part_2(string input)
+        public static long Part_2(string input)
         {
             string[] linesStr = input.Split("\r\n", StringSplitOptions.TrimEntries);
             List<string> rulesStr = new List<string>();

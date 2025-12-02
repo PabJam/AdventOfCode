@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _2025;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -16,16 +17,9 @@ using Utils;
 
 namespace _2024
 {
-    public static class Day17
+    public class Day17 : IDay
     {
-        public const string mini_test_input = "";
-        public const string test_input_1 = "Register A: 729\r\nRegister B: 0\r\nRegister C: 0\r\n\r\nProgram: 0,1,5,4,3,0";
-        public const string input_1 = "Register A: 59397658\r\nRegister B: 0\r\nRegister C: 0\r\n\r\nProgram: 2,4,1,1,7,5,4,6,1,4,0,3,5,5,3,0";
-        public const string test_input_2 = "Register A: 2024\r\nRegister B: 0\r\nRegister C: 0\r\n\r\nProgram: 0,3,5,4,3,0";
-        public const string input_2 = input_1;
         private delegate void Instruction(ref long regA, ref long regB, ref long regC, int operenad, ref int pc, ref string output);
-
-        
 
         public static long Part_1(string input)
         {

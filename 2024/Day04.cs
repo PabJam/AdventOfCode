@@ -9,7 +9,7 @@ using Utils;
 
 namespace _2024
 {
-    public class Day04 : Day
+    public class Day04 : IDay
     {
         private static long XmasPerX(int x, int y, string[] lines)
         {
@@ -64,7 +64,7 @@ namespace _2024
             return 1;
         }
 
-        public override long Part_1(string input)
+        public static long Part_1(string input)
         {
             string[] linesStr = input.Split("\r\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             long sum = 0;
@@ -82,7 +82,7 @@ namespace _2024
             return sum;
         }
 
-        public override long Part_2(string input)
+        public static long Part_2(string input)
         {
             string[] linesStr = input.Split("\r\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             long sum = 0;
