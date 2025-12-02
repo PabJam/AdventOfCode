@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace _2025
 {
-    public class Day01 : Day
+    public class Day01 : IDay
     {
-        public override long Part_1(string input)
+        public static long Part_1(string input)
         {
             string[] lines = input.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             long counter = 0;
@@ -27,7 +27,7 @@ namespace _2025
             return counter;
         }
 
-        public override long Part_2(string input)
+        public static long Part_2(string input)
         {
             string[] lines = input.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             long counter = 0;
