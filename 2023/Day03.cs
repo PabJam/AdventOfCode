@@ -11,7 +11,7 @@ namespace _2023
     {
         public static long Part_1(string input)
         {
-            string[] map = input.Split("\n");
+            string[] map = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             List<int> connectedNums = new List<int>();
             int count = 0;
             List<Vector2Int> usedCoords = new List<Vector2Int>();
@@ -49,7 +49,7 @@ namespace _2023
 
         public static long Part_2(string input)
         {
-            string[] map = input.Split("\n");
+            string[] map = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             int count = 0;
             for (int y = 0; y < map.Length; y++)
             {

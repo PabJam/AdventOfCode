@@ -12,6 +12,7 @@ namespace _2023
         public static long Part_1(string input)
         {
             long result = long.MaxValue;
+            input = input.Replace("\r", "");
             string[] categories = input.Split("\n\n");
             long[] seeds = Utils.StringColonNumsToLongArr(categories[0]);
             List<string[]> mapsStr = new List<string[]>();
@@ -64,6 +65,7 @@ namespace _2023
         public static long Part_2(string input)
         {
             long result = long.MaxValue;
+            input = input.Replace("\r", "");
             string[] categories = input.Split("\n\n");
             long[] seeds = Utils.StringColonNumsToLongArr(categories[0]);
             List<string[]> mapsStr = new List<string[]>();

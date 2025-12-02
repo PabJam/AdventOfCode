@@ -11,7 +11,7 @@ namespace _2023
     {
         public static long Part_1(string input)
         {
-            string[] cards = input.Split('\n');
+            string[] cards = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             List<StringBuilder> cardsSB = new List<StringBuilder>();
             int points = 0;
             for (int i = 0; i < cards.Length; i++)
@@ -66,7 +66,7 @@ namespace _2023
 
         public static long Part_2(string input)
         {
-            string[] cards = input.Split('\n');
+            string[] cards = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             List<StringBuilder> cardsSB = new List<StringBuilder>();
             int[] points = new int[cards.Length];
             int[] cardAmmount = new int[cards.Length];

@@ -247,7 +247,7 @@ namespace _2023
 
         public static SortedList<Vector2Int, char> StringToCharMap(string input)
         {
-            string[] lines = input.Split('\n');
+            string[] lines = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             SortedList<Vector2Int, char> map = new SortedList<Vector2Int, char>();
             for (int x = 0; x < lines[0].Length; x++)
             {

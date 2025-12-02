@@ -28,7 +28,7 @@ namespace _2023
 
         public static long Part_1(string input)
         {
-            string[] codes = input.Split('\n');
+            string[] codes = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             int count = 0;
             for (int i = 0; i < codes.Length; i++)
             {
@@ -56,7 +56,7 @@ namespace _2023
 
         public static long Part_2(string input)
         {
-            string[] codes = input.Split('\n');
+            string[] codes = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             int count = 0;
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < codes.Length; i++)

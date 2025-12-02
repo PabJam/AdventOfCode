@@ -11,7 +11,7 @@ namespace _2023
     {
         public static long Part_1(string input)
         {
-            string[] timeDist = input.Split('\n');
+            string[] timeDist = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             int[] times = Utils.StringColonNumsToIntArr(timeDist[0]);
             int[] distances = Utils.StringColonNumsToIntArr(timeDist[1]);
             int result = 1;
@@ -29,7 +29,7 @@ namespace _2023
 
         public static long Part_2(string input)
         {
-            string[] timeDist = input.Split('\n');
+            string[] timeDist = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             int[] times = Utils.StringColonNumsToIntArr(timeDist[0]);
             int[] distances = Utils.StringColonNumsToIntArr(timeDist[1]);
             StringBuilder timeStr = new StringBuilder();

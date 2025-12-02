@@ -11,7 +11,7 @@ namespace _2023
     {
         public static long Part_1(string input)
         {
-            string[] handValStr = input.Split('\n');
+            string[] handValStr = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             HandValPair[] handValPairs = new HandValPair[handValStr.Length];
             string[] currenthHandVal;
             int result = 0;
@@ -30,7 +30,7 @@ namespace _2023
 
         public static long Part_2(string input)
         {
-            string[] handValStr = input.Split('\n');
+            string[] handValStr = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             HandValPair[] handValPairs = new HandValPair[handValStr.Length];
             string[] currenthHandVal;
             int result = 0;
