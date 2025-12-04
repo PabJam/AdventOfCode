@@ -23,6 +23,18 @@ namespace Utils
         Equal = 2,
     }
 
+    public enum Directions
+    {
+        Right = 0,
+        Down = 1,
+        Left = 2,
+        Up = 3,
+        DownRight = 4,
+        DownLeft = 5,
+        UpLeft = 6,
+        UpRight = 7,
+    }
+
     public static class DataUtils
     {
         /// <summary>
@@ -54,6 +66,28 @@ namespace Utils
             if (pos.Item1 < 0 || pos.Item1 > xLen - 1) { return false; }
             if (pos.Item2 < 0 || pos.Item2 > yLen - 1) { return false; }
             return true;
+        }
+
+        /// <summary>
+        /// Turns an input string into a grid with the origin in the bottom left corner.
+        /// first idx is x coord and second index is y coord
+        /// </summary>
+        /// <param name="str">puzzle input string</param>
+        /// <returns></returns>
+        public static Dictionary<Vector2Int, char> StringToGrid(string str)
+        {
+            string[] lines = str.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            Dictionary<Vector2Int, char> grid = new Dictionary<Vector2Int, char>();
+            for (int x = 0; x < lines[0].Length; x++)
+            {
+                for (int y = 0; y < lines.Length; y++)
+                {
+                    Vector2Int pos = new Vector2Int(x, y);
+                    grid.Add(pos, lines[lines.Length - 1 - y][x]);
+                }
+            }
+
+            return grid;
         }
     }
 }

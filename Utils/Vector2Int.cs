@@ -14,7 +14,11 @@ namespace Utils
         public static readonly Vector2Int Right = new Vector2Int(1, 0);
         public static readonly Vector2Int Zero = new Vector2Int(0, 0);
         public static readonly Vector2Int One = new Vector2Int(1, 1);
-
+        public static readonly Vector2Int DownRight = new Vector2Int(1, -1);
+        public static readonly Vector2Int DownLeft = new Vector2Int(-1, -1);
+        public static readonly Vector2Int UpLeft = new Vector2Int(-1, 1);
+        public static readonly Vector2Int UpRight = new Vector2Int(1, 1);
+        public static readonly Vector2Int[] Directions = { Right, Down, Left, Up, DownRight, DownLeft, UpLeft, UpRight };
         public int x;
         public int y;
         public Vector2Int(int x, int y)
@@ -47,6 +51,22 @@ namespace Utils
         public static Boolean operator !=(Vector2Int v1, Vector2Int v2)
         {
             return !(v1 == v2);
+        }
+
+        // Override Equals
+        public override bool Equals(object? obj)
+        {
+            if (obj is Vector2Int other)
+            {
+                return this == other;
+            }
+            return false;
+        }
+
+        // Override GetHashCode
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(x, y);
         }
 
         public int CompareTo(Vector2Int other)
