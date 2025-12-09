@@ -74,14 +74,34 @@ namespace Utils
             return MathF.Sqrt(x * x + y * y + z * z);
         }
 
+        public long LengthSq()
+        {
+            return x * x + y * y + z * z;
+        }
+
         public static double Length(Vector3Int vec)
         {
             return MathF.Sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
         }
 
+        public static long LengthSq(Vector3Int vec)
+        {
+            return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
+        }
+
         public static double Distance(Vector3Int v1, Vector3Int v2)
         {
             return Math.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z));
+        }
+
+        public static long DistanceSq(Vector3Int v1, Vector3Int v2)
+        {
+            return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z);
+        }
+
+        public static long DistanceManhatten(Vector3Int v1, Vector3Int v2)
+        {
+            return Math.Abs(v1.x - v2.x) + Math.Abs(v1.y - v2.y) + Math.Abs(v1.z - v2.z);
         }
 
         public int CompareTo(object? obj)
@@ -91,9 +111,9 @@ namespace Utils
                 return -1;
             }
             Vector3Int other = (Vector3Int)obj;
-            double l1, l2;
-            l1 = this.Length();
-            l2 = other.Length();
+            long l1, l2;
+            l1 = this.LengthSq();
+            l2 = other.LengthSq();
             if (l1 < l2)
             {
                 return -1;

@@ -19,9 +19,9 @@ namespace Utils
         public static readonly Vector2Int UpLeft = new Vector2Int(-1, 1);
         public static readonly Vector2Int UpRight = new Vector2Int(1, 1);
         public static readonly Vector2Int[] Directions = { Right, Down, Left, Up, DownRight, DownLeft, UpLeft, UpRight };
-        public int x;
-        public int y;
-        public Vector2Int(int x, int y)
+        public long x;
+        public long y;
+        public Vector2Int(long x, long y)
         {
             this.x = x;
             this.y = y;
@@ -35,11 +35,11 @@ namespace Utils
         {
             return new Vector2Int(v1.x - v2.x, v1.y - v2.y);
         }
-        public static Vector2Int operator *(int i, Vector2Int vec)
+        public static Vector2Int operator *(long i, Vector2Int vec)
         {
             return new Vector2Int(i * vec.x, i * vec.y);
         }
-        public static Vector2Int operator *(Vector2Int vec, int i)
+        public static Vector2Int operator *(Vector2Int vec, long i)
         {
             return new Vector2Int(i * vec.x, i * vec.y);
         }
@@ -69,13 +69,65 @@ namespace Utils
             return HashCode.Combine(x, y);
         }
 
+        public double Length()
+        {
+            return MathF.Sqrt(x * x + y * y);
+        }
+
+        public long LengthSq()
+        {
+            return x * x + y * y;
+        }
+
+        public static double Length(Vector2Int vec)
+        {
+            return MathF.Sqrt(vec.x * vec.x + vec.y * vec.y);
+        }
+
+        public static long LengthSq(Vector2Int vec)
+        {
+            return vec.x * vec.x + vec.y * vec.y;
+        }
+
+        public static double Distance(Vector2Int v1, Vector2Int v2)
+        {
+            return Math.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
+        }
+
+        public static long DistanceSq(Vector2Int v1, Vector2Int v2)
+        {
+            return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y);
+        }
+
+        public static long DistanceManhatten(Vector2Int v1, Vector2Int v2)
+        {
+            return Math.Abs(v1.x - v2.x) + Math.Abs(v1.y - v2.y);
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj is not Vector2Int || obj == null)
+            {
+                return -1;
+            }
+            Vector2Int other = (Vector2Int)obj;
+            long l1, l2;
+            l1 = this.LengthSq();
+            l2 = other.LengthSq();
+            if (l1 < l2)
+            {
+                return -1;
+            }
+            else if (l2 > l1)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
         public int CompareTo(Vector2Int other)
         {
-            if (this.x < other.x) { return -1; }
-            if (this.x > other.x) { return 1; }
-            if (this.y < other.y) { return -1; }
-            if (this.y > other.y) { return 1; }
-            return 0;
+            return CompareTo((object?)other);
         }
     }
 }
