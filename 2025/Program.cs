@@ -14,6 +14,10 @@ namespace _2025
             //1389211740
             //1389211740
             //1544327824
+            //1544327824
+            //1544327824
+            //1544327824
+            //1544362560
             long result = DayHelper.Solve(Day09.Part_2, pathPart1, out Stopwatch timer);
             Console.WriteLine(result);
             Console.WriteLine(timer.ElapsedMilliseconds.ToString()+"ms");
