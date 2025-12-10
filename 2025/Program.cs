@@ -10,15 +10,7 @@ namespace _2025
             const string pathTest = @"D:\AOC_Test.txt";
             const string pathPart1 = @"D:\AOC_Part1.txt";
             const string pathPart2 = @"D:\AOC_Part2.txt";
-            //1389211740
-            //1389211740
-            //1389211740
-            //1544327824
-            //1544327824
-            //1544327824
-            //1544327824
-            //1544362560
-            long result = DayHelper.Solve(Day09.Part_2, pathPart1, out Stopwatch timer);
+            long result = DayHelper.Solve(Day10.Part_2, pathTest, out Stopwatch timer);
             Console.WriteLine(result);
             Console.WriteLine(timer.ElapsedMilliseconds.ToString()+"ms");
         }
