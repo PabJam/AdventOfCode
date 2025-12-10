@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils;
+using Microsoft.Z3;
+
 namespace _2025
 {
     public class Day10 : IDay
@@ -110,51 +112,179 @@ namespace _2025
             }
 
             long sum = 0;
-            //List<int> presses;
             List<int> target = new List<int>();
-            //List<List<int>> sortedButtons;
-            //List<int> state;
-            List<List<(int, List<int>)>> maximumPresses = new List<List<(int, List<int>)>>();
-            List<List<int>> maximumPressesPerButton = new List<List<int>>();
             for (int i = 0; i < targets.Length; i++)
             {
-                maximumPressesPerButton.Add(Enumerable.Repeat(int.MaxValue, buttons[i].Count).ToList());
-                maximumPresses.Add(new List<(int, List<int>)>());
-                string[] nums = targets[i].Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                for(int j = 0; j < nums.Length; j++)
+                target.Clear();
+                string[] num = targets[i].Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                for(int j = 0; j < num.Length; j++)
                 {
-                    target.Add(int.Parse(nums[j]));
+                    target.Add(int.Parse(num[j]));
                 }
-                for (int j = 0; j < target.Count; j++)
-                {
-                    List<int> buttonsWithTargetIdx = new List<int>();
-                    for (int k = 0; k < buttons[i].Count; k++)
-                    {
-                        
-                        if (buttons[i][k].Contains(j))
-                        {
-                            buttonsWithTargetIdx.Add(k);
-                        }
-                        
-                    }
-                    maximumPresses[i].Add((target[j], buttonsWithTargetIdx));
-                }
-
-                for (int j = 0; j < maximumPresses[i].Count; j++)
-                {
-                    for(int k = 0; k < maximumPresses[i][j].Item2.Count; k++)
-                    {
-                        if (maximumPressesPerButton[i][maximumPresses[i][j].Item2[k]] > maximumPresses[i][j].Item1)
-                        {
-                            maximumPressesPerButton[i][maximumPresses[i][j].Item2[k]] = maximumPresses[i][j].Item1;
-                        }
-                    }
-                }
+                sum += Z3LinearEquationSolver(buttons[i], target);
             }
             return sum;
         }
 
-        private static bool CeckValid(List<int> state, List<int> target)
+        // Disclaimer written by AI because I have never used Z3 before to solve linear equations
+        private static long Z3LinearEquationSolver(List<List<int>> sparseVectors, List<int> target)
+        {
+            int numVectors = sparseVectors.Count;
+            int dimension = target.Count;
+
+            //Console.WriteLine($"Solving for {numVectors} sparse vectors, dimension {dimension}");
+            //Console.WriteLine($"Target: [{string.Join(", ", target)}]");
+            //Console.WriteLine("\nSparse vectors:");
+            //for (int i = 0; i < numVectors; i++)
+            //{
+            //    Console.WriteLine($"  v[{i}]: indices [{string.Join(",", sparseVectors[i])}]");
+            //}
+
+            // STEP 1: Create a Z3 Context
+            // This is the "world" where all Z3 operations happen
+            using (Context ctx = new Context())
+            {
+                // STEP 2: Create an Optimizer (instead of basic Solver)
+                // Optimizer can minimize/maximize objectives while satisfying constraints
+                Optimize opt = ctx.MkOptimize();
+
+                // STEP 3: Create variables for coefficients
+                // We need one coefficient for each sparse vector
+                IntExpr[] coeffs = new IntExpr[numVectors];
+
+                for (int i = 0; i < numVectors; i++)
+                {
+                    // MkIntConst creates an integer variable with a name
+                    coeffs[i] = ctx.MkIntConst($"c{i}");
+
+                    // STEP 4: Add constraint that coefficient must be >= 0
+                    // MkGe = "greater than or equal"
+                    // This ensures all coefficients are non-negative integers
+                    opt.Assert(ctx.MkGe(coeffs[i], ctx.MkInt(0)));
+                }
+
+                // STEP 5: Add constraints for each dimension of the target vector
+                // For each position in the target vector, the sum of coefficients
+                // (where the sparse vector has a 1) must equal the target value
+
+                for (int d = 0; d < dimension; d++)
+                {
+                    // Build the sum: c[0]*v[0][d] + c[1]*v[1][d] + ... + c[n]*v[n][d]
+                    // where v[i][d] is 1 if d is in sparseVectors[i], else 0
+
+                    ArithExpr[] terms = new ArithExpr[numVectors];
+
+                    for (int v = 0; v < numVectors; v++)
+                    {
+                        // Check if this sparse vector has a 1 at dimension d
+                        bool hasOne = sparseVectors[v].Contains(d);
+
+                        if (hasOne)
+                        {
+                            // If yes, include the coefficient in the sum
+                            terms[v] = coeffs[v];
+                        }
+                        else
+                        {
+                            // If no, contribute 0 to the sum
+                            terms[v] = ctx.MkInt(0);
+                        }
+                    }
+
+                    // MkAdd creates the sum of all terms
+                    ArithExpr sum = ctx.MkAdd(terms);
+
+                    // MkEq creates an equality constraint
+                    // Assert adds the constraint to the optimizer
+                    // This says: "the sum must equal target[d]"
+                    opt.Assert(ctx.MkEq(sum, ctx.MkInt(target[d])));
+                }
+
+                // STEP 6: Define the objective to minimize
+                // We want to minimize the sum of all coefficients
+                // MkAdd sums all coefficient variables
+                ArithExpr objective = ctx.MkAdd(coeffs);
+
+                // MkMinimize tells the optimizer to find the smallest value
+                // of this expression while satisfying all constraints
+                opt.MkMinimize(objective);
+
+                // STEP 7: Solve the problem
+                // Check() runs the solver and returns SATISFIABLE, UNSATISFIABLE, or UNKNOWN
+                //Console.WriteLine("\nSolving...");
+
+                if (opt.Check() == Status.SATISFIABLE)
+                {
+                    // STEP 8: Extract the solution
+                    // Model contains the values Z3 found for all variables
+                    Model model = opt.Model;
+
+                    //Console.WriteLine("\n✓ Solution found!");
+                    //Console.WriteLine("\nCoefficients:");
+
+                    long sumCoeffs = 0;
+                    long[] coeffValues = new long[numVectors];
+
+                    for (int i = 0; i < numVectors; i++)
+                    {
+                        // Evaluate gets the concrete value Z3 assigned to this variable
+                        var coeffValue = model.Evaluate(coeffs[i]);
+
+                        // Convert to integer
+                        long intValue = long.Parse(coeffValue.ToString());
+                        coeffValues[i] = intValue;
+                        sumCoeffs += intValue;
+
+                        //Console.WriteLine($"  c[{i}] = {intValue}  (for vector [{string.Join(",", sparseVectors[i])}])");
+                    }
+
+                    //Console.WriteLine($"\n✓ Sum of coefficients: {sumCoeffs}");
+                    //Console.WriteLine($"  (This is the MINIMUM possible sum)");
+
+                    // STEP 9: Verify the solution
+                    //Console.WriteLine("\nVerification:");
+                    long[] computed = new long[dimension];
+
+                    for (int d = 0; d < dimension; d++)
+                    {
+                        long sum = 0;
+                        for (int v = 0; v < numVectors; v++)
+                        {
+                            if (sparseVectors[v].Contains(d))
+                            {
+                                sum += coeffValues[v];
+                            }
+                        }
+                        computed[d] = sum;
+                    }
+
+                    //Console.WriteLine($"Computed: [{string.Join(", ", computed)}]");
+                    //Console.WriteLine($"Target:   [{string.Join(", ", target)}]");
+                    //
+                    //bool match = computed.SequenceEqual(target);
+                    //Console.WriteLine($"Match: {(match ? "✓ YES" : "✗ NO")}");
+                    //
+                    //if (match)
+                    //{
+                    //    Console.WriteLine("\n✓ Solution is correct!");
+                    //}
+
+                    return sumCoeffs;
+                }
+                else if (opt.Check() == Status.UNSATISFIABLE)
+                {
+                    Console.WriteLine("\n✗ No solution exists!");
+                    Console.WriteLine("The target vector cannot be expressed as a combination of the given sparse vectors.");
+                }
+                else
+                {
+                    Console.WriteLine("\n? Unknown status (timeout or error)");
+                }
+            }
+            return -1;
+        }
+
+        private static bool CheckValid(List<int> state, List<int> target)
         {
             for (int i = 0; i < state.Count; i++)
             {
