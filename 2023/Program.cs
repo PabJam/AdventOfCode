@@ -10,7 +10,7 @@ namespace _2023
             const string pathTest = @"D:\AOC_Test.txt";
             const string pathPart1 = @"D:\AOC_Part1.txt";
             const string pathPart2 = @"D:\AOC_Part2.txt";
-            long result = DayHelper.Solve(Day16.Part_2, pathPart1, out Stopwatch timer);
+            long result = DayHelper.Solve(Day18.Part_2, pathPart1, out Stopwatch timer);
             Console.WriteLine(result);
             Console.WriteLine(timer.ElapsedMilliseconds.ToString() + "ms");
         }
