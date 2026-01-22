@@ -122,7 +122,7 @@ namespace Utils
             {
                 return 1;
             }
-            return 0;
+            return Equals(obj) ? 0 : 1;
         }
 
         public int CompareTo(Vector2Int other)

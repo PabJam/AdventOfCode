@@ -259,6 +259,20 @@ namespace _2023
             return map;
         }
 
+        public static Dictionary<Vector2Int, char> StringToCharMapDic(string input)
+        {
+            string[] lines = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            Dictionary<Vector2Int, char> map = new Dictionary<Vector2Int, char>();
+            for (int x = 0; x < lines[0].Length; x++)
+            {
+                for (int y = 0; y < lines.Length; y++)
+                {
+                    map.Add(new Vector2Int(x, y), lines[lines.Length - y - 1][x]);
+                }
+            }
+            return map;
+        }
+
         public static SortedList<Vector2Int, char> StringToCharMap(string[] lines)
         {
             SortedList<Vector2Int, char> map = new SortedList<Vector2Int, char>();

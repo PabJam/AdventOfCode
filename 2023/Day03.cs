@@ -12,8 +12,8 @@ namespace _2023
         public static long Part_1(string input)
         {
             string[] map = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            List<int> connectedNums = new List<int>();
-            int count = 0;
+            List<long> connectedNums = new List<long>();
+            long count = 0;
             List<Vector2Int> usedCoords = new List<Vector2Int>();
             for (int y = 0; y < map.Length; y++)
             {
@@ -27,7 +27,7 @@ namespace _2023
                     {
                         continue;
                     }
-                    int[] neighbours = GetNeighbours(map, new Vector2Int(x, y), out Vector2Int[] usedFirstCoords);
+                    long[] neighbours = GetNeighbours(map, new Vector2Int(x, y), out Vector2Int[] usedFirstCoords);
                     for (int i = 0; i < neighbours.Length; i++)
                     {
                         if (usedCoords.Contains(usedFirstCoords[i]) == false)
@@ -50,16 +50,16 @@ namespace _2023
         public static long Part_2(string input)
         {
             string[] map = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            int count = 0;
-            for (int y = 0; y < map.Length; y++)
+            long count = 0;
+            for (long y = 0; y < map.Length; y++)
             {
-                for (int x = 0; x < map[y].Length; x++)
+                for (long x = 0; x < map[y].Length; x++)
                 {
-                    if (map[y][x] != '*')
+                    if (map[y][(int)x] != '*')
                     {
                         continue;
                     }
-                    int[] neighbours = GetNeighbours(map, new Vector2Int(x, y), out Vector2Int[] usedFirstCoords);
+                    long[] neighbours = GetNeighbours(map, new Vector2Int(x, y), out Vector2Int[] usedFirstCoords);
                     if (neighbours.Length != 2)
                     {
                         continue;
@@ -71,21 +71,21 @@ namespace _2023
             return count;
         }
 
-        private static int[] GetNeighbours(string[] map, Vector2Int coords, out Vector2Int[] usedFirstCoords)
+        private static long[] GetNeighbours(string[] map, Vector2Int coords, out Vector2Int[] usedFirstCoords)
         {
-            List<int> neighbours = new List<int>();
+            List<long> neighbours = new List<long>();
             List<Vector2Int> usedCoords = new List<Vector2Int>();
             List<Vector2Int> usedFirstCoordsL = new List<Vector2Int>();
-            for (int x = -1; x < 2; x++)
+            for (long x = -1; x < 2; x++)
             {
-                for (int y = -1; y < 2; y++)
+                for (long y = -1; y < 2; y++)
                 {
                     if (coords.x + x < 0) { continue; }
                     if (coords.y + y < 0) { continue; }
                     if (coords.y + y >= map.Length) { continue; }
                     if (coords.x + x >= map[coords.y + y].Length) { continue; }
                     if (x == 0 && y == 0) { continue; }
-                    if (char.IsDigit(map[coords.y + y][(int)coords.x + x]) == true)
+                    if (char.IsDigit(map[coords.y + y][(int)(coords.x + x)]) == true)
                     {
                         List<Vector2Int> digitPos = new List<Vector2Int>();
                         digitPos.Add(new Vector2Int(coords.x + x, coords.y + y));
@@ -97,7 +97,7 @@ namespace _2023
                         while (true)
                         {
                             if (coords.x + x + count >= map[coords.y + y].Length) { break; }
-                            if (char.IsDigit(map[coords.y + y][coords.x + x + count]) == true)
+                            if (char.IsDigit(map[coords.y + y][(int)(coords.x + x + count)]) == true)
                             {
                                 digitPos.Add(new Vector2Int(coords.x + x + count, coords.y + y));
                             }
@@ -108,7 +108,7 @@ namespace _2023
                         while (true)
                         {
                             if (coords.x + x + count < 0) { break; }
-                            if (char.IsDigit(map[coords.y + y][coords.x + x + count]) == true)
+                            if (char.IsDigit(map[coords.y + y][(int)(coords.x + x) + count]) == true)
                             {
                                 digitPos.Insert(0, new Vector2Int(coords.x + x + count, coords.y + y));
                             }
@@ -120,7 +120,7 @@ namespace _2023
                         usedFirstCoordsL.Add(digitPos[0]);
                         for (int i = 0; i < digitPos.Count; i++)
                         {
-                            numStr.Append(map[digitPos[i].y][digitPos[i].x]);
+                            numStr.Append(map[digitPos[i].y][(int)(digitPos[i].x)]);
                         }
                         neighbours.Add(Int32.Parse(numStr.ToString()));
                     }
