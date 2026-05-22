@@ -8,6 +8,6 @@ fn main() {
 
     let input = fs::read_to_string(FILE_PATH)
         .expect("Should have been able to read the file");
-    let result = day02::part_2(input);
+    let result = day05::part_2(input);
     println!("{result}");
 }
