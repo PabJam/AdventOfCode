@@ -9,6 +9,6 @@ fn main() {
     let input = fs::read_to_string(FILE_PATH)
         .expect("Should have been able to read the file");
     // 2211
-    let result = day06::part_2(input);
+    let result = day07::part_2(input);
     println!("{result}");
 }
